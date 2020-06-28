@@ -1,2 +1,2 @@
-dbfiles="/home/github/sign-dnssec-zone/dbfiles"
-keyfiles="/home/github/sign-dnssec-zone/keyfiles/"
+dbfiles="/path/to/db/files/"
+keyfiles="/path/to/key/files/"
