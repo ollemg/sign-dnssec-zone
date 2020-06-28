@@ -1,0 +1,6 @@
+*.db
+*.key
+dsset*
+*.db.signed
+dbfiles/
+keyfiles/

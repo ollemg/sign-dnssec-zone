@@ -1,0 +1,24 @@
+#!/bin/bash
+
+source ./config.sh
+dnsdb=($(ls --ignore='*[0-9]*' --ignore='*.signed' --ignore='dsset*' $dbfiles | sort))
+domain=($(ls --ignore='*[0-9]*' --ignore='*.signed' --ignore='dsset*' $dbfiles | cut -d '.' -f1,2,3 | sort))
+dnskey=($(ls --ignore='*private' --ignore='dsset*' $keyfiles | sort))
+zonedate=$(date +%y%m%d%H%M)
+expiredzone=$(date -d "+3 year" +%Y%m%d000000)
+zonesed=""'s/^\(\s*\)[0-9]\{0,\}\(\s*;\s*serial\)$/\1'$zonedate'\2/'""
+
+#echo ${!domain[*]}
+#echo ${#domain[*]}
+#echo ${#domain[0]}
+for zone in ${!domain[*]}
+do
+    #echo $zone
+    # echo ${domain[$zone]}
+    # echo ${dnskey[$zone]}
+    # echo ${dnsdb[$zone]}
+    echo "sed -i -e $zonesed $dbfiles${dnsdb[$zone]} && named-checkzone ${domain[$zone]} $dbfiles${dnsdb[$zone]} && dnssec-signzone -e $expiredzone -S -z -k $keyfiles${dnskey[$zone]} -o ${domain[$zone]} $dbfiles${dnsdb[$zone]} && systemctl restart named"
+    #echo "Assinando zona: ${domain[$zone]}"&& sed -i -e $zonesed $dbfiles${dnsdb[$zone]}&& named-checkzone ${domain[$zone]} $dbfiles${dnsdb[$zone]}&& dnssec-signzone -e $expiredzone -S -z -k $keyfiles${dnskey[$zone]} -o ${domain[$zone]} $dbfiles${dnsdb[$zone]}&& systemctl restart named
+done
+
+
